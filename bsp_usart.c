@@ -5,6 +5,19 @@
 #include "stm32f10x.h"
 #include <stdio.h>
 
+#if 0
+static void NVIC_Configuration(void){
+	NVIC_InitTypeDef NVIC_InitStructure;
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+
+	NVIC_InitStructure.NVIC_IRQChannel                   = USART1_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+}
+#endif
+
 void USART_Config(void){
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
@@ -32,9 +45,22 @@ void USART_Config(void){
 	USART_InitStructure.USART_Mode       = USART_Mode_Rx | USART_Mode_Tx;
 
 	USART_Init(USART1, &USART_InitStructure);	
-
+#if 0
+	NVIC_Configuration();
+	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+#endif
 	USART_Cmd(USART1, ENABLE);	    
 }
+
+#if 0
+void USART1_IRQHandler(void){
+	uint8_t ucTemp;
+	if(USART_GetITStatus(USART1,USART_IT_RXNE)!=RESET){		
+		ucTemp = USART_ReceiveData(USART1);
+		USART_SendData(USART1,ucTemp);    
+	}	 
+}
+#endif
 
 void Usart_SendByte( USART_TypeDef * pUSARTx, uint8_t ch){
 	USART_SendData(pUSARTx,ch);
@@ -77,4 +103,6 @@ int fgetc(FILE *f){
 
 	return (int)USART_ReceiveData(DEBUG_USARTx);
 }
+
+
 
