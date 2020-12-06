@@ -1,9 +1,19 @@
+#include "bsp_bitband.h"
 
-#include "bsp_gpio.h"  
+void SOFT_Delay(__IO uint32_t nCount)	
+{
+	for(; nCount != 0; nCount--);
+}
 
 int main(void)
-{		
-	GPIO_Config();
+{	
+	// ...Init... //
+	while(1){
+		PBout(0)= 0;		
+		SOFT_Delay(0x0FFFFF);
 	
-	while(1);   	
+		PBout(0)= 1;
+		SOFT_Delay(0x0FFFFF);		
+	}
 }
+
